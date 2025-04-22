@@ -1,4 +1,4 @@
-// Lab03.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// Lab04.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
@@ -32,22 +32,21 @@ struct Firm
 	}
 };
 
-class FirmsManager 
+class FirmsManagerBase
 {
-private:
+protected:
 	vector<Firm> firms;
 	int nextId = 1;
-
 public:
-	FirmsManager() = default;
+	FirmsManagerBase() = default;
 
-	FirmsManager(const FirmsManager& other) 
+	FirmsManagerBase(const FirmsManagerBase& other)
 	{
 		firms = other.firms;
 		nextId = other.nextId;
 	}
 
-	void addFirm(const Firm& f) 
+	void addFirm(const Firm& f)
 	{
 		firms.push_back({ nextId++, f.name, f.profile, f.year, f.hasBenefits, f.director });
 	}
@@ -59,22 +58,14 @@ public:
 
 	void displayAll() const
 	{
-		for (const auto& f : firms) 
+		for (const auto& f : firms)
 		{
 			cout << f.id << ") " << f.name << ", " << f.profile << ", " << f.year << ", "
 				<< (f.hasBenefits ? "так" : "ні") << ", " << f.director << std::endl;
 		}
 	}
 
-	void sortByYear() 
-	{
-		sort(firms.begin(), firms.end(), [](const Firm& a, const Firm& b)
-		{
-			return a.year < b.year;
-		});
-	}
-
-	explicit operator int() const 
+	explicit operator int() const
 	{
 		return static_cast<int>(firms.size());
 	}
@@ -84,13 +75,29 @@ public:
 		cout << "Фірми, зайняті виробництвом:\n";
 		for (const auto& f : firms)
 		{
-			if (f.profile == "виробництво") 
+			if (f.profile == "виробництво")
 			{
 				cout << f.id << ") " << f.name << " - Керівник: " << f.director << std::endl;
 			}
 		}
 	}
+
 };
+
+class FirmsManager : public FirmsManagerBase
+{
+
+public:
+
+	void sortByYear()
+	{
+		sort(firms.begin(), firms.end(), [](const Firm& a, const Firm& b)
+		{
+			return a.year < b.year;
+		});
+	}
+};
+
 
 
 int main()
